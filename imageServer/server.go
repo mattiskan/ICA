@@ -10,6 +10,14 @@ import (
 
 var scores = make(map[string]int)
 
+type info struct {
+	url   string
+	name  string
+	votes int
+}
+
+var baseURL = "http://192.168.0.150"
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 	r.ParseMultipartForm(6400000)
@@ -53,12 +61,20 @@ func getContests(w http.ResponseWriter, r *http.Request) {
 	os.Chdir("uploads")
 
 	files, _ := ioutil.ReadDir("./")
+	fmt.Fprintf(w, "[")
+	var before = false
 	for _, f := range files {
 		if f.Name()[0] != '.' {
+			// fmt.Fprintf(w, "%s\n", f.Name())
+			if before {
+				fmt.Fprintf(w, ", ")
+			}
 			log.Println(f.Name())
-			fmt.Fprintf(w, "%s\n", f.Name())
+			fmt.Fprintf(w, "%s", f.Name())
+			before = true
 		}
 	}
+	fmt.Fprintf(w, "]")
 }
 
 func getImages(w http.ResponseWriter, r *http.Request) {
@@ -66,12 +82,23 @@ func getImages(w http.ResponseWriter, r *http.Request) {
 	var str = r.FormValue("contest")
 	os.Chdir(str)
 	files, _ := ioutil.ReadDir("./")
+	fmt.Fprintf(w, "[")
+	var before = false
 	for _, f := range files {
 		if f.Name()[0] != '.' {
-			log.Println(f.Name())
-			fmt.Fprintf(w, "%s\n", f.Name())
+			// log.Println(f.Name())
+			// fmt.Fprintf(w, "%s\n", f.Name())
+			if before {
+				fmt.Fprintf(w, ",")
+			}
+			fmt.Fprintf(w, "{")
+			fmt.Fprintf(w, "%s/%s/%s", baseURL, str, f.Name())
+			fmt.Fprintf(w, ", %s", f.Name())
+			fmt.Fprintf(w, ", %d}", scores[str+"/"+f.Name()])
+			before = true
 		}
 	}
+	fmt.Fprintf(w, "]")
 }
 
 func main() {

@@ -23,3 +23,27 @@ function vote(contest, image) {
 	return {result: WL.Server.invokeHttp(input).text};
 }
 
+
+function getContests(){
+
+	var input = {
+	    method : 'get',
+	    path : '/getContests'+contest
+	};
+	
+
+	return {result: WL.Server.invokeHttp(input).text};
+}
+
+
+function getImages(contest) {
+	
+	var input = {
+	    method : 'get',
+	    path : '/getImages?contest='+contest
+	};
+	
+
+	return {result: WL.Server.invokeHttp(input).text};
+}
+
