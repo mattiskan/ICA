@@ -16,7 +16,7 @@ type info struct {
 	votes int
 }
 
-var baseURL = "http://192.168.0.150"
+var baseURL = "http://192.168.0.150:8080/uploads"
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
@@ -36,10 +36,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	os.MkdirAll("uploads", 0777)
-	os.Chdir("uploads")
-	os.MkdirAll(contestId, 0777)
-	os.Chdir(contestId)
-	err = ioutil.WriteFile(handler.Filename, data, 0777)
+	// os.Chdir("uploads")
+	os.MkdirAll("uploads/"+contestId, 0777)
+	// os.Chdir(contestId)
+	err = ioutil.WriteFile("uploads/"+contestId+"/"+handler.Filename, data, 0777)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -58,9 +58,9 @@ func get(w http.ResponseWriter, r *http.Request) {
 }
 
 func getContests(w http.ResponseWriter, r *http.Request) {
-	os.Chdir("uploads")
+	//os.Chdir("uploads")
 
-	files, _ := ioutil.ReadDir("./")
+	files, _ := ioutil.ReadDir("./uploads/")
 	fmt.Fprintf(w, "[")
 	var before = false
 	for _, f := range files {
@@ -78,10 +78,10 @@ func getContests(w http.ResponseWriter, r *http.Request) {
 }
 
 func getImages(w http.ResponseWriter, r *http.Request) {
-	os.Chdir("uploads")
+	//os.Chdir("uploads")
 	var str = r.FormValue("contest")
-	os.Chdir(str)
-	files, _ := ioutil.ReadDir("./")
+	//os.Chdir(str)
+	files, _ := ioutil.ReadDir("./uploads/" + str + "/")
 	fmt.Fprintf(w, "[")
 	var before = false
 	for _, f := range files {
@@ -92,9 +92,9 @@ func getImages(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, ",")
 			}
 			fmt.Fprintf(w, "{")
-			fmt.Fprintf(w, "%s/%s/%s", baseURL, str, f.Name())
-			fmt.Fprintf(w, ", %s", f.Name())
-			fmt.Fprintf(w, ", %d}", scores[str+"/"+f.Name()])
+			fmt.Fprintf(w, "\"url\": \"%s/%s/%s\"", baseURL, str, f.Name())
+			fmt.Fprintf(w, ", \"title\": \"%s\"", f.Name())
+			fmt.Fprintf(w, ", \"votes\": \"%d\"}", scores[str+"/"+f.Name()])
 			before = true
 		}
 	}
