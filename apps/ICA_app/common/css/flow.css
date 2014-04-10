@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+
+.flow-entry {
+	max-width: 420px;
+	height: 280px;
+	border: 1px solid black;
+}
+
+.food-image {
+	height: 260px;
+	width: 100%;
+	
+	background-size: cover !important;
+	background-position: center center !important;
+}
+

@@ -21,4 +21,5 @@ function wlCommonInit(){
 	
 	// Common initialization code goes here
 
+	$("#content-holder").load("flow.html");
 }
