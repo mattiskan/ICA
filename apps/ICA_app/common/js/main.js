@@ -21,33 +21,39 @@ function wlCommonInit(){
 	
 	// Common initialization code goes here
 	
-	$("#content-holder").load("flowEntry.html");
-	return;
-	
 	loadFlowPage();
 	
 	
 }
 
 function loadFlowPage(){
-
 	
-	var feed = [
-	   { url: "images/food.jpg", title: "test", votes: 5},
-	   { url: "images/food.jpg", title: "test1", votes: 8},
-	   { url: "images/food.jpg", title: "test", votes: 2},
-	   { url: "images/food.jpg", title: "test3", votes: 4}
-	];
 	
-	for(var i=0; i<4; i++) {
+	
+	
+	
+	getImages(1, function(result) {
 		
-		var html = ['<div class="flow-entry">',
-		            	'<div class="food-image" style="background:url(\'' + feed[i].url + '\')"></div>',
-		            	'<p> Welcome <span class="username">'+ feed[i].title +'</span>!</p>',
-		            	'<p class="votes">'+ feed[i].votes +'</p>',
-		            '</div>'].join('\n');
-		$("#content-holder").append(html);
-	}
+		feed = $.parseJSON(result);
+		
+		console.log(feed);
+		
+		for(var i=0; i<4; i++) {			
+			var html = ['<div class="flow-entry">',
+				            '<div class="food-image" style="background:url(\''+ feed[i].url+'\')"></div>',
+				            '<span class="title">'+feed[i].title+'</span>',
+				            '<div class="scores"',
+				            '<img class="score plus" src="images/plus.png"/>',
+				            '<span class="score">'+feed[i].votes+'</span>',
+				            '<img  class="score" src="images/minus.png">',
+				            '</div>', //scores
+			            '</div>'].join("\n");
+			$("#content-holder").append(html);
+		}
+	});
+	
+	
+
 	
 	
 	
