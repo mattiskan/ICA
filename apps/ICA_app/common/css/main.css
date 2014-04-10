@@ -6,7 +6,24 @@ a, abbr, address, article, aside, audio, b, blockquote, body, canvas, caption, c
 
 /* Worklight container div */
 body {
-	height: 460px;
-	margin: 0 auto;
-	width: 320px;
+
+}
+
+#logo-text {
+	margin-left: 20px;
+	color: white;
+	display: inline;
+}
+
+#home_button {
+	margin: 4px;
+	height: 24px;
+	width: auto;
+	float: right;
+}
+
+
+.ui-header {
+	background-color: red;
+	height: 32px;
 }

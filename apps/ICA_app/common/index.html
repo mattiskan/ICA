@@ -10,18 +10,23 @@
     		<link rel="stylesheet" href="css/jquery.mobile-1.4.2.css" />
     		<link rel="stylesheet" href="css/jquery.mobile.icons-1.4.2.css" />    	
     		<script type="text/javascript" src="js/camera.js"></script>
+    		<link rel="stylesheet" href="css/flow.css">
+    		<link rel="stylesheet" href="css/funky.css" />
+    		<link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />    	
     		<script>window.$ = window.jQuery = WLJQ;</script>
     	</head>
     	<body style="display: none;">
     		<!--application UI goes here-->
     		<div data-role="page">
 
+			
 			<div data-role="header">
-				<h1>My Title</h1>
-			</div><!-- /header -->
+				<h1 id="logo-text">ICA</h1>
+				<img id="home_button" src="images/house.png"/>		
+			</div>	
 		
-			<div data-role="content">	
-				<p>Hello world</p>		
+			<div id="content-holder" data-role="content">
+				<p>Hello world</p>
 			</div><!-- /content -->
 			<div id="camera_status">
 			</div>
