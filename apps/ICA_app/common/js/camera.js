@@ -12,17 +12,40 @@ function takePicture() {
 
     navigator.camera.getPicture(
         function(data) {
-            var img = $('#camera_image');
+           
             //img.style.visibility = "visible";
 //            img.style.display = "block";
-            img.show();
+           
             
-            $('#camera_status').html("Success");
-            console.log("Success!");
-            //img.src = "data:image/jpeg;base64," + data;
-//            img.src = data;
-            img.attr("src", data);
-            $('#camera_status').html(data);
+        	  /*	   $("#content_holder").load("imageUpload.html","", function(){
+            	
+            	 var img = $('#camera_image');
+            	 img.show();
+            	  // $('#camera_status').html("Success");
+                   console.log("Success!");
+                   //img.src = "data:image/jpeg;base64," + data;
+//                   img.src = data;
+                   img.attr("src", data);
+                   //$('#camera_status').html(data);
+  
+            });
+            */
+        	
+        	var imageURI = data;
+            var options = new FileUploadOptions();
+            options.fileKey="file";
+            options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+            options.mimeType="image/jpeg";
+
+            var params = {};
+            params.contest = 1;
+          
+
+            options.params = params;
+
+            var ft = new FileTransfer();
+            ft.upload(imageURI, encodeURI(url("/upload")), win, fail, options);
+         
 
         },
         function(e) {
@@ -115,6 +138,7 @@ function win(r) {
     console.log("Code = " + r.responseCode);
     console.log("Response = " + r.response);
     console.log("Sent = " + r.bytesSent);
+    loadFlowPage();
 }
 
 
