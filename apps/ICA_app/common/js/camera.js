@@ -62,6 +62,31 @@ function upvote(contest, image) {
     	 }
      });
 }*/
+
+function getContests(callback) {
+    WL.Client.invokeProcedure( {
+     	adapter : 'goAdapter',
+    	procedure : 'getContests',
+     }, {
+    	 onSuccess: function(result){
+    		 callback(result.invocationResult.result);
+    	 }
+     });
+}
+
+function getImages(contest, callback) {
+    WL.Client.invokeProcedure( {
+     	adapter : 'goAdapter',
+    	procedure : 'getImages',
+    	parameters : [contest]
+     }, {
+    	 onSuccess: function(result){
+    		 callback(result.invocationResult.result);
+    	 }
+     });
+}
+
+
 function upvote(contest, image, callback) {
     WL.Client.invokeProcedure( {
      	adapter : 'goAdapter',
