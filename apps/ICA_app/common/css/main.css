@@ -27,3 +27,13 @@ body {
 	background-color: red;
 	height: 32px;
 }
+
+#footer {
+	text-align: center;
+}
+
+#footer img {
+	margin: auto;
+	height: 30px;
+	margin-top: 10px;
+}

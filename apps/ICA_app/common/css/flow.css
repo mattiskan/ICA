@@ -8,23 +8,32 @@
 	margin: 10px auto;
 }
 
+.flow-entry:last-child {
+	margin-bottom: 60px;
+}
+
 .food-image {
 	height: 260px;
 	width: 100%;
 	
 	background-size: cover !important;
 	background-position: center center !important;
+	margin-bottom: 10px;
 }
 
-.flow-entry .plus {
-	margin-left: 210px;
-}
 
 .flow-entry .score {
-	margin-top: 10px;
+	margin-right: 10px;
 }
 
 .title {
 	margin-left: 10px;
 	width: 300px;
 }
+
+.scores {
+	float: right;
+}
+
+
+
