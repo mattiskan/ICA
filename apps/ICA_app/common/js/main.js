@@ -20,6 +20,17 @@ function wlCommonInit(){
 	 */
 	
 	// Common initialization code goes here
+	
+	loadFlowPage();
+	
+	
+}
 
-	$("#content-holder").load("flow.html");
+function loadFlowPage(){
+	for(var i=0; i<4; i++) {
+		$("#content-holder").append($("<div>").load("flowEntry.html", function () {
+			$(".flowEntry")[i].find(".username")[0].html("Mattis");
+		}));
+	}
+	
 }

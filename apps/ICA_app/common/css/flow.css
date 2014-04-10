@@ -4,6 +4,8 @@
 	max-width: 420px;
 	height: 280px;
 	border: 1px solid black;
+	background-color: #72b577;
+	margin: auto;
 }
 
 .food-image {
