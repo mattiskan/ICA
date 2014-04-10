@@ -21,12 +21,16 @@ function wlCommonInit(){
 	
 	// Common initialization code goes here
 	
+	$("#content-holder").load("flowEntry.html");
+	return;
+	
 	loadFlowPage();
 	
 	
 }
 
 function loadFlowPage(){
+
 	
 	var feed = [
 	   { url: "images/food.jpg", title: "test", votes: 5},

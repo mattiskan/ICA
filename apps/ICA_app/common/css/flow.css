@@ -2,7 +2,7 @@
 
 .flow-entry {
 	max-width: 420px;
-	height: 280px;
+	height: 300px;
 	border: 1px solid black;
 	background-color: #72b577;
 	margin: auto;
@@ -16,3 +16,14 @@
 	background-position: center center !important;
 }
 
+.flow-entry .plus {
+	margin-left: 210px;
+}
+
+.flow-entry .score {
+	margin-top: 10px;	
+}
+
+.title {
+	margin-left: 10px;
+}
