@@ -23,13 +23,10 @@ function wlCommonInit(){
 	
 	loadFlowPage();
 	
-	
 }
 
 function loadFlowPage(){
-	
-	
-	
+	$("#content-holder").html("");
 	
 	
 	getImages(1, function(result) {
@@ -42,8 +39,8 @@ function loadFlowPage(){
 			var html = ['<div class="flow-entry">',
 				            '<div class="food-image" style="background:url(\''+ feed[i].url+'\')"></div>',
 				            '<span class="title">'+feed[i].title+'</span>',
-				            '<div class="scores"',
-				            '<img class="score plus" src="images/plus.png"/>',
+				            '<div class="scores">',
+				            '<img class="score" onclick="voteSimple('+feed[i].title+')" src="images/plus.png"/>',
 				            '<span class="score">'+feed[i].votes+'</span>',
 				            '<img  class="score" src="images/minus.png">',
 				            '</div>', //scores
@@ -53,7 +50,10 @@ function loadFlowPage(){
 	});
 	
 	
-
+function upvoteSimple(title){
+	upvote("1", title, function(){ } );
+	console.log("upvoted");
+}
 	
 	
 	
