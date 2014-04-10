@@ -47,17 +47,29 @@ namespace ICAbac
 
         Program(string[] args)
         {
-            File.WriteAllText("trace.txt", "");
-            Trace.Listeners.Add(new TextWriterTraceListener("trace.txt"));
+            //File.WriteAllText("trace.txt", "");
+            //Trace.Listeners.Add(new TextWriterTraceListener("trace.txt"));
             Trace.Listeners.Add(new ConsoleTraceListener(true));
 
-            if (args.Contains("--crawl"))
+            if (args.Length == 0)
+                usage();
+            else if (args[0] == "--interactive" && args.Length == 1)
+                interactive();
+            else if (args[0] == "--server" && args.Length == 2)
+                server(args[1]);
+            else if (args[0] == "--crawl" && args.Length == 1)
                 crawl();
+            else
+                usage();
+        }
 
-            if (args.Contains("--server"))
-                server();
+        private void usage()
+        {
+            Console.WriteLine(@"Usage:
 
-            interactive();
+    ICAbac --crawl
+    ICAbac --interactive
+    ICAbac --server http://*:PORT/PATH/");
         }
 
         void interactive()
@@ -80,14 +92,15 @@ namespace ICAbac
             }
         }
 
-        void server()
+        void server(string prefix)
         {
             NetDataContractSerializer serializer = new NetDataContractSerializer();
             var db = (Dictionary<string, FoodNode>)serializer.ReadObject(File.OpenRead("foodNodeDB.dat"));
             var ingredients = db.Keys.ToList();
 
             HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("http://*:80/icabac/");
+            listener.Prefixes.Add(prefix);
+            Trace.WriteLine("Starting listener");
             try
             {
                 listener.Start();
