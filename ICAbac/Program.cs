@@ -137,6 +137,7 @@ namespace ICAbac
                 var context = listener.GetContext();
                 Trace.WriteLine("Handling request");
                 var response = context.Response;
+                response.AddHeader("Access-Control-Allow-Origin", "*");
                 response.ContentLength64 = buffer.LongLength;
                 response.ContentType = "application/json; charset=utf-8";
                 var output = response.OutputStream;
