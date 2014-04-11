@@ -45,7 +45,12 @@ namespace ICAbac
             }
         }
 
-        Program(string[] args)
+        private const string DbFileName = "foodNodeDB.dat";
+        private NetDataContractSerializer DbSerializer = new NetDataContractSerializer();
+        private Dictionary<string, FoodNode> Db;
+        private List<string> Ingredients;
+
+        void run(string[] args)
         {
             //File.WriteAllText("trace.txt", "");
             //Trace.Listeners.Add(new TextWriterTraceListener("trace.txt"));
@@ -72,11 +77,22 @@ namespace ICAbac
     ICAbac --server http://*:PORT/PATH/");
         }
 
+        void saveDb()
+        {
+            var dbFile = File.Create(DbFileName);
+            DbSerializer.Serialize(dbFile, Db);
+            dbFile.Close();
+        }
+
+        void loadDb()
+        {
+            Db = (Dictionary<string, FoodNode>)DbSerializer.ReadObject(File.OpenRead(DbFileName));
+            Ingredients = Db.Keys.ToList();
+        }
+
         void interactive()
         {
-            NetDataContractSerializer serializer = new NetDataContractSerializer();
-            var db = (Dictionary<string, FoodNode>)serializer.ReadObject(File.OpenRead("foodNodeDB.dat"));
-            var ingredients = db.Keys.ToList();
+            loadDb();
 
             while (true)
             {
@@ -86,7 +102,7 @@ namespace ICAbac
                     ;
                 Console.WriteLine();
 
-                HashSet<string> bestSet = createIngredientSet(db, ingredients, ingredientCount);
+                HashSet<string> bestSet = createIngredientSet(ingredientCount);
                 Console.WriteLine(string.Join(", ", bestSet));
                 Console.WriteLine();
             }
@@ -94,9 +110,7 @@ namespace ICAbac
 
         void server(string prefix)
         {
-            NetDataContractSerializer serializer = new NetDataContractSerializer();
-            var db = (Dictionary<string, FoodNode>)serializer.ReadObject(File.OpenRead("foodNodeDB.dat"));
-            var ingredients = db.Keys.ToList();
+            loadDb();
 
             HttpListener listener = new HttpListener();
             listener.Prefixes.Add(prefix);
@@ -114,28 +128,24 @@ namespace ICAbac
 
             while (true)
             {
-                HashSet<string> set = createIngredientSet(db, ingredients, 7);
-                string json = JsonConvert.SerializeObject(set.ToArray());
-                byte[] buffer = Encoding.GetEncoding("ISO-8859-1").GetBytes(json);
+                HashSet<string> set = createIngredientSet(7);
+                var obj = new { ingredients = set.ToArray() };
+                string json = JsonConvert.SerializeObject(obj);
+                byte[] buffer = Encoding.UTF8.GetBytes(json);
 
                 Trace.WriteLine("Waiting for request...");
                 var context = listener.GetContext();
                 Trace.WriteLine("Handling request");
                 var response = context.Response;
+                response.ContentLength64 = buffer.LongLength;
+                response.ContentType = "application/json; charset=utf-8";
                 var output = response.OutputStream;
                 output.Write(buffer, 0, buffer.Length);
                 output.Close();
             }
         }
 
-        /// <summary>
-        /// Generate a set of weird ingredients.
-        /// </summary>
-        /// <param name="db">Food node database</param>
-        /// <param name="ingredients">Keys in food node database</param>
-        /// <param name="ingredientCount">Desired number of ingredients</param>
-        /// <returns></returns>
-        private static HashSet<string> createIngredientSet(Dictionary<string, FoodNode> db, List<string> ingredients, int ingredientCount)
+        HashSet<string> createIngredientSet(int ingredientCount)
         {
             HashSet<string> bestSet = new HashSet<string>();
             int bestScore = int.MaxValue;
@@ -149,11 +159,11 @@ namespace ICAbac
                     string other;
                     do
                     {
-                        other = ingredients[random.Next() % ingredients.Count];
+                        other = Ingredients[random.Next() % Ingredients.Count];
                     } while (set.Contains(other));
                     set.Add(other);
                 }
-                int score = set.Sum(ingredient => set.Sum(other => db[ingredient].GetWeight(other)));
+                int score = set.Sum(ingredient => set.Sum(other => Db[ingredient].GetWeight(other)));
                 if (score < bestScore)
                 {
                     bestSet = set;
@@ -165,8 +175,7 @@ namespace ICAbac
 
         void crawl()
         {
-            NetDataContractSerializer serializer = new NetDataContractSerializer();
-            var db = new Dictionary<string, FoodNode>();
+            Db = new Dictionary<string, FoodNode>();
 
             for (int i = 1; ; ++i)
             {
@@ -195,17 +204,16 @@ namespace ICAbac
                     foreach (var ingredient in ingredients)
                     {
                         FoodNode fn = null;
-                        if (!db.TryGetValue(ingredient, out fn))
-                            db.Add(ingredient, fn = new FoodNode(ingredient));
+                        if (!Db.TryGetValue(ingredient, out fn))
+                            Db.Add(ingredient, fn = new FoodNode(ingredient));
 
                         foreach (var other in ingredients.Where(o => o != ingredient))
                             fn.AddNeighbour(other);
                     }
                 }
 
-                var dbFile = File.Create("foodNodeDB.dat");
-                serializer.Serialize(dbFile, db);
-                dbFile.Close();
+                Trace.WriteLine("Saving data");
+                saveDb();
 
                 //Environment.Exit(0);
                 //break;
@@ -259,9 +267,10 @@ namespace ICAbac
             string data = new StreamReader(stream).ReadToEnd();
             return data;
         }
+
         static void Main(string[] args)
         {
-            new Program(args);
+            new Program().run(args);
         }
     }
 
